@@ -1,0 +1,162 @@
+<div id="section-inicio" class="tab-section active">
+  <div class="section-header" style="margin-bottom: 20px;">
+    <div>
+      <h3 style="font-size: 22px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 10px;">
+        <span style="color: var(--primary);">•</span> Centro de Comando Sublicolor
+      </h3>
+      <p class="section-description" style="color: var(--text-secondary); font-size: 13px;">Monitorea en tiempo real, cruce de datos y métricas analíticas del ecosistema antidetect.</p>
+    </div>
+  </div>
+
+  <!-- CUADRÍCULA SUPERIOR DE 4 TARJETAS GRANDES DE MÉTRICAS -->
+  <div class="kpi-cards-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 24px;">
+    
+    <!-- TARJETA 1: PERFILES ACTIVOS -->
+    <div class="kpi-stat-card">
+      <div class="kpi-stat-top">
+        <div class="kpi-icon-box icon-blue">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <span class="kpi-stat-title">Perfiles Activos</span>
+        <button type="button" class="btn-dots-kpi" aria-label="Opciones de métrica">⋮</button>
+      </div>
+      <div class="kpi-stat-body">
+        <div class="kpi-stat-val val-blue" id="stat-perfiles-activos">0</div>
+        <div class="kpi-stat-sub" id="stat-footer-perfiles">0 perfiles creados</div>
+        <div class="kpi-stat-trend trend-up">
+          <span class="arrow">↑</span> 20% vs ayer
+        </div>
+      </div>
+    </div>
+
+    <!-- TARJETA 2: PROXYS EN LÍNEA -->
+    <div class="kpi-stat-card">
+      <div class="kpi-stat-top">
+        <div class="kpi-icon-box icon-purple">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+        </div>
+        <span class="kpi-stat-title">Proxys en Línea</span>
+        <button type="button" class="btn-dots-kpi" aria-label="Opciones de métrica">⋮</button>
+      </div>
+      <div class="kpi-stat-body">
+        <div class="kpi-stat-val" id="stat-proxies-activos">0</div>
+        <div class="kpi-stat-sub" id="stat-footer-proxies">0 servidores en total</div>
+        <div class="kpi-stat-trend trend-neutral">
+          <span class="arrow">↔</span> 0% vs ayer
+        </div>
+      </div>
+    </div>
+
+    <!-- TARJETA 3: CLIENTES TOTALES -->
+    <div class="kpi-stat-card">
+      <div class="kpi-stat-top">
+        <div class="kpi-icon-box icon-green">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>
+        </div>
+        <span class="kpi-stat-title">Clientes Totales</span>
+        <button type="button" class="btn-dots-kpi" aria-label="Opciones de métrica">⋮</button>
+      </div>
+      <div class="kpi-stat-body">
+        <div class="kpi-stat-val" id="stat-total-clientes">0</div>
+        <div class="kpi-stat-sub">Usuarios finales activos</div>
+        <div class="kpi-stat-trend trend-up">
+          <span class="arrow">↑</span> 100% vs ayer
+        </div>
+      </div>
+    </div>
+
+    <!-- TARJETA 4: CUENTAS POR EXPIRAR -->
+    <div class="kpi-stat-card">
+      <div class="kpi-stat-top">
+        <div class="kpi-icon-box icon-red">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        </div>
+        <span class="kpi-stat-title">Cuentas por Expirar</span>
+        <button type="button" class="btn-dots-kpi" aria-label="Opciones de métrica">⋮</button>
+      </div>
+      <div class="kpi-stat-body">
+        <div class="kpi-stat-val val-red" id="stat-cuentas-expirando">0</div>
+        <div class="kpi-stat-sub" id="stat-footer-cuentas">1 cuenta en riesgo</div>
+        <div class="kpi-stat-trend trend-down">
+          <span class="arrow">+</span> 100% vs ayer
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- PANELES DE DETALLE: ESTADO DEL SISTEMA & ÚLTIMOS CLIENTES REGISTRADOS -->
+  <div class="grid-2-col" style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 20px;">
+    
+    <!-- PANEL 1: ESTADO DEL SISTEMA -->
+    <div class="dashboard-panel-card">
+      <div class="panel-card-header">
+        <h4 class="panel-card-title">
+          <span class="panel-icon-blue">⚡</span> Estado del Sistema
+        </h4>
+        <span class="badge-status-pill badge-operacional">Operacional</span>
+      </div>
+
+      <div class="system-status-list">
+        <div class="status-item-row">
+          <div class="status-item-left">
+            <span class="status-item-icon">👥</span>
+            <span class="status-item-label">Personal de Equipo (Staff)</span>
+          </div>
+          <strong id="dash-staff-count" class="status-item-value">0 Admins / 0 Resellers</strong>
+        </div>
+
+        <div class="status-item-row">
+          <div class="status-item-left">
+            <span class="status-item-icon">📦</span>
+            <span class="status-item-label">Grupos & Categorías</span>
+          </div>
+          <strong id="dash-grupos-count" class="status-item-value">0 creados</strong>
+        </div>
+
+        <div class="status-item-row">
+          <div class="status-item-left">
+            <span class="status-item-icon">🏷️</span>
+            <span class="status-item-label">Etiquetas de Camuflaje</span>
+          </div>
+          <strong id="dash-etiquetas-count" class="status-item-value">0 registradas</strong>
+        </div>
+
+        <div class="status-item-row">
+          <div class="status-item-left">
+            <span class="status-item-icon">🛡️</span>
+            <span class="status-item-label">Motor Antidetect & Cookies</span>
+          </div>
+          <span class="badge-tech-pill">✓ WebRTC & Hardware Evasions OK</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 2: ÚLTIMOS CLIENTES REGISTRADOS -->
+    <div class="dashboard-panel-card">
+      <div class="panel-card-header">
+        <h4 class="panel-card-title">
+          <span class="panel-icon-blue">👥</span> Últimos Clientes Registrados
+        </h4>
+        <button type="button" class="btn-link-action" onclick="switchTab('usuarios')">Ver Todos</button>
+      </div>
+
+      <div class="table-wrapper-clean">
+        <table class="data-table-saas">
+          <thead>
+            <tr>
+              <th>USUARIO</th>
+              <th>SUSCRIPCIÓN</th>
+              <th>VENCIMIENTO</th>
+              <th>ESTADO</th>
+            </tr>
+          </thead>
+          <tbody id="dash-ultimos-clientes-body">
+            <!-- Carga dinámica -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>

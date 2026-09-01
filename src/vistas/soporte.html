@@ -1,0 +1,38 @@
+<div id="section-soporte" class="tab-section active">
+  <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <h3 style="font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">🎧 Gestión de Tickets de Soporte</h3>
+      <p class="section-description">Atención de consultas, incidencias y reportes enviados por los clientes.</p>
+    </div>
+    <div>
+      <input 
+        type="text" 
+        id="buscar-ticket" 
+        class="form-input" 
+        placeholder="🔍 Buscar por cliente o mensaje..." 
+        onkeyup="filtrarTicketsAdmin(this.value)" 
+        style="max-width: 280px;" 
+      />
+    </div>
+  </div>
+
+  <!-- TABLA DE TICKETS -->
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID Ticket</th>
+          <th>Cliente</th>
+          <th>Cuenta Afectada</th>
+          <th>Mensaje del Cliente</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-tickets-body">
+        <!-- Carga dinámica -->
+      </tbody>
+    </table>
+  </div>
+</div>

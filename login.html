@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Sublicolor - Acceso seguro a la plataforma antidetect">
+  <meta name="theme-color" content="#ffffff">
+  <title>Sublicolor - Inicio de Sesión</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="pagina-login">
+
+  <!-- TOAST DE NOTIFICACIÓN (ESQUINA SUPERIOR DERECHA) -->
+  <div class="toast-notificacion" id="toast-login">
+    <div class="toast-icono-check">✓</div>
+    <div class="toast-texto">
+      <h4>Operación Exitosa</h4>
+      <p>Sesión cerrada correctamente.</p>
+    </div>
+    <button type="button" class="toast-cerrar" onclick="cerrarToastLogin()">&times;</button>
+  </div>
+
+  <!-- PATRÓN DE DONT Y DECORACIÓN DE FONDO -->
+  <div class="login-bg-dots"></div>
+  <div class="login-bg-waves"></div>
+
+  <!-- CONTENEDOR PRINCIPAL FLOTANTE -->
+  <div class="login-container-wrapper">
+    <div class="login-card">
+      
+      <!-- CABECERA LOGO -->
+      <div class="login-cabecera">
+        <div class="login-logo-badge">
+          <span class="logo-dot"></span>
+        </div>
+        <h2>SUBLICOLOR</h2>
+      </div>
+      <p class="login-subtitulo">Gestión de Perfiles Multicuenta</p>
+      
+      <div class="login-separador"></div>
+      
+      <div class="login-seguridad">
+        <span>🔒 Acceso seguro a la plataforma</span>
+      </div>
+
+      <!-- FORMULARIO -->
+      <form id="form-login" class="login-formulario" onsubmit="ejecutarLoginLocal(event)">
+        <div class="grupo-input">
+          <label for="login-usuario">Usuario</label>
+          <div class="input-con-icono">
+            <span class="icono-izq">👤</span>
+            <input type="text" id="login-usuario" placeholder="Ingresa tu usuario (Opcional)" autocomplete="username">
+          </div>
+        </div>
+
+        <div class="grupo-input">
+          <label for="login-password">Contraseña</label>
+          <div class="input-con-icono">
+            <span class="icono-izq">🔒</span>
+            <input type="password" id="login-password" placeholder="Ingresa tu contraseña (Opcional)" autocomplete="current-password">
+            <button type="button" class="btn-mostrar-pass" onclick="togglePasswordVisibility()" aria-label="Mostrar u ocultar contraseña">👁️</button>
+          </div>
+        </div>
+
+        <!-- BOTÓN DE INGRESO ESTRICTO -->
+        <button type="submit" class="btn-ingresar">Ingresar →</button>
+      </form>
+
+    </div>
+  </div>
+
+  <script>
+    function togglePasswordVisibility() {
+      const passInput = document.getElementById('login-password');
+      if (passInput) {
+        passInput.type = passInput.type === 'password' ? 'text' : 'password';
+      }
+    }
+
+    function cerrarToastLogin() {
+      const toast = document.getElementById('toast-login');
+      if (toast) {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        setTimeout(() => toast.style.display = 'none', 300);
+      }
+    }
+
+    function ejecutarLoginLocal(e) {
+      e.preventDefault();
+      const userVal = document.getElementById('login-usuario').value.trim();
+      const passVal = document.getElementById('login-password').value;
+
+      const userObj = {
+        rol: 'admin',
+        usuario: userVal || 'Admin Master',
+        permisos: ['crear_clientes', 'eliminar_perfiles', 'gestionar_proxies', 'ver_facturacion', 'acceso_configuracion', 'gestionar_equipo']
+      };
+
+      localStorage.setItem('sublicolor_sesion_activa', JSON.stringify(userObj));
+      localStorage.setItem('sublicolor_usuario_activo', JSON.stringify(userObj));
+
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>

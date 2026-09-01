@@ -1,0 +1,98 @@
+<div id="section-proxies" class="tab-section active">
+  <div class="section-header">
+    <div>
+      <p class="section-description">Administra tus servidores proxy para asignarlos a entornos aislados.</p>
+    </div>
+  </div>
+
+  <!-- Tabla de Proxies -->
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Nombre Proxy</th>
+          <th>IP : Puerto</th>
+          <th>Usuario</th>
+          <th>Estado / Latencia</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-proxies-body">
+        <!-- Carga dinámica -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- MODAL CREACIÓN DE PROXY -->
+<div id="modal-nuevo-proxy" class="modal-overlay" style="display: none;">
+  <div class="modal-content" style="max-width: 460px;">
+    <div class="modal-header">
+      <h3 class="modal-title">Agregar Nuevo Server Proxy</h3>
+      <button class="modal-close" type="button" onclick="cerrarModalProxy()">&times;</button>
+    </div>
+
+    <form id="form-nuevo-proxy" onsubmit="guardarProxy(event)">
+      <div class="form-group">
+        <label for="modal-proxy-nombre">Nombre del Proxy *</label>
+        <input 
+          type="text" 
+          id="modal-proxy-nombre" 
+          class="form-input" 
+          placeholder="ej. Proxy USA Residencial 01" 
+          required 
+        />
+      </div>
+
+      <div class="grid-2-col" style="margin-bottom: 0;">
+        <div class="form-group">
+          <label for="modal-proxy-ip">IP / Host *</label>
+          <input 
+            type="text" 
+            id="modal-proxy-ip" 
+            class="form-input" 
+            placeholder="192.168.1.100" 
+            required 
+          />
+        </div>
+        <div class="form-group">
+          <label for="modal-proxy-puerto">Puerto *</label>
+          <input 
+            type="text" 
+            id="modal-proxy-puerto" 
+            class="form-input" 
+            placeholder="8080" 
+            required 
+          />
+        </div>
+      </div>
+
+      <div class="grid-2-col" style="margin-bottom: 0;">
+        <div class="form-group">
+          <label for="modal-proxy-usuario">Usuario (Opcional)</label>
+          <input 
+            type="text" 
+            id="modal-proxy-usuario" 
+            class="form-input" 
+            placeholder="proxy_user" 
+          />
+        </div>
+        <div class="form-group">
+          <label for="modal-proxy-password">Contraseña (Opcional)</label>
+          <input 
+            type="password" 
+            id="modal-proxy-password" 
+            class="form-input" 
+            placeholder="••••••••" 
+          />
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" onclick="cerrarModalProxy()">Cancelar</button>
+        <button type="button" class="btn-secondary" style="border-color: var(--color-acento); color: var(--color-acento);" onclick="probarProxyFormulario()">Verificar Conexión</button>
+        <button type="submit" id="btn-guardar-proxy" class="btn-submit">Guardar Proxy</button>
+      </div>
+    </form>
+  </div>
+</div>

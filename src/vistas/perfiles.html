@@ -1,0 +1,257 @@
+<div id="section-perfiles" class="tab-section active">
+  <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <p class="section-description">Administra tus entornos aislados y credenciales de acceso.</p>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <button type="button" class="btn-secondary" style="padding: 6px 14px; font-size: 11.5px; border-color: #cbd5e1; font-weight: 600;" onclick="abrirModalGlobal()">
+        🛡️ Configurar Seguridad Global
+      </button>
+      <input 
+        type="text" 
+        id="buscar-perfil" 
+        class="form-input" 
+        placeholder="🔍 Buscar perfiles por nombre, proxy o etiqueta..." 
+        onkeyup="filtrarPerfiles(this.value)" 
+        style="max-width: 320px;" 
+      />
+    </div>
+  </div>
+
+  <!-- Tabla de Perfiles Multicuenta -->
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID Perfil</th>
+          <th>Nombre</th>
+          <th>Proxy Asignado</th>
+          <th>Estado</th>
+          <th>Último Acceso</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-perfiles-body">
+        <!-- Carga dinámica -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- MODAL CREACIÓN DE PERFIL AVANZADO -->
+<div id="modal-nuevo-perfil" class="modal-overlay" style="display: none;">
+  <div class="modal-content modal-large">
+    <div class="modal-header">
+      <h3 class="modal-title">Crear Nuevo Entorno Aislado</h3>
+      <button class="modal-close" type="button" onclick="cerrarModalPerfil()">&times;</button>
+    </div>
+
+    <form id="form-nuevo-perfil" onsubmit="guardarPerfil(event)">
+      <div class="grid-2-col">
+        
+        <!-- COLUMNA IZQUIERDA: BÁSICOS -->
+        <div class="col-section">
+          <h4 class="col-title">Configuración Básica</h4>
+
+          <div class="form-group">
+            <label for="modal-perfil-nombre">Nombre del Perfil *</label>
+            <input 
+              type="text" 
+              id="modal-perfil-nombre" 
+              class="form-input" 
+              placeholder="ej. Perfil Facebook Ads 01" 
+              required 
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="modal-perfil-grupo">Grupo de Trabajo</label>
+            <select id="modal-perfil-grupo" class="form-input">
+              <option value="General">General</option>
+            </select>
+          </div>
+
+          <div class="grupo-form-logo" style="grid-column: span 2; margin-bottom: 12px;">
+            <label>Logo del Servicio:</label>
+            
+            <div class="opciones-logo-contenedor">
+              <!-- OPCIÓN 1: Subir Archivo -->
+              <div class="opcion-subida">
+                <input type="file" id="archivo-logo-perfil" accept="image/png, image/jpeg, image/webp" style="display: none;">
+                <button type="button" class="btn-secondary" style="padding: 6px 12px; font-size: 12px;" onclick="document.getElementById('archivo-logo-perfil').click()">
+                  📁 Subir desde PC
+                </button>
+                <small class="texto-ayuda">Max. 200KB</small>
+              </div>
+
+              <span class="divisor-texto">O</span>
+
+              <!-- OPCIÓN 2: Pegar Link -->
+              <div class="opcion-link">
+                <input type="text" id="url-logo-perfil" class="form-input" placeholder="🌐 Pegar Link / URL de la imagen...">
+              </div>
+            </div>
+
+            <!-- Previsualización Visual -->
+            <div class="preview-logo-caja" id="preview-logo-caja" style="display: none; margin-top: 10px;">
+              <p style="font-size: 11px; margin-bottom: 4px; color: #64748b;">Vista previa:</p>
+              <img id="img-preview-logo" src="" alt="Preview Logo" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover; border: 1px solid #e2e8f0;">
+            </div>
+          </div>
+
+          <!-- SECCIÓN DE COOKIES / SESIÓN EN FORMATO JSON -->
+          <div class="grupo-form-cookies" style="margin-top: 12px; margin-bottom: 12px;">
+            <label style="font-weight: 600; font-size: 12px; color: var(--text-main);">🍪 Sesión / Cookies (Formato JSON):</label>
+            <textarea id="cookies-perfil" class="input-form textarea-code" placeholder='[{"name": "session-id", "value": "123456", "domain": ".netflix.com"}]' onpaste="parsearCookiesPegadas(event)"></textarea>
+            <small class="texto-ayuda" style="font-size: 10.5px; color: var(--text-muted); display: block; margin-top: 4px;">Pega aquí las cookies exportadas. El sistema las inyectará automáticamente sin pedir contraseña al cliente.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-perfil-etiquetas">Etiquetas (Separadas por comas)</label>
+            <input 
+              type="text" 
+              id="modal-perfil-etiquetas" 
+              class="form-input" 
+              placeholder="ej. Ads, VIP, Farming" 
+            />
+            <div id="container-tags-disponibles" style="margin-top: 6px;"></div>
+          </div>
+
+          <div class="form-group">
+            <label for="estado-operativo">Estado Operativo</label>
+            <select id="estado-operativo" class="form-input">
+              <option value="activo">🟢 Activo / Normal</option>
+              <option value="mantenimiento">🟠 En Mantenimiento</option>
+              <option value="nuevo">✨ Recién Lanzado</option>
+              <option value="caido">🔴 Inhabilitado / Caído</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-perfil-start-url">Link de Inicio Predeterminado (URL)</label>
+            <input 
+              type="url" 
+              id="modal-perfil-start-url" 
+              class="form-input" 
+              placeholder="https://100prepremium.com" 
+            />
+          </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: MOTOR ANTIDETECT & CAMUFLAJE -->
+        <div class="col-section">
+          <h4 class="col-title">Motor Antidetect & Proxies</h4>
+
+          <div class="form-group">
+            <label for="modal-perfil-proxy">Servidor Proxy Asignado</label>
+            <select id="modal-perfil-proxy" class="form-input">
+              <option value="Direct Connection">Direct Connection (Sin Proxy)</option>
+            </select>
+          </div>
+
+          <h4 class="col-title" style="margin-top: 10px;">Emulación de Entorno (Hardware)</h4>
+          <div class="grid-2-col" style="margin-bottom: 0;">
+            <div class="form-group">
+              <label for="emulacion-so">Sistema Operativo *</label>
+              <select id="emulacion-so" class="form-input">
+                <option value="Windows 11 (PC Moderna)">Windows 11 (PC Moderna)</option>
+                <option value="Windows 10 (PC/Laptop)">Windows 10 (PC/Laptop)</option>
+                <option value="macOS (Apple Silicon)">macOS (Apple Silicon)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="emulacion-ram">Memoria RAM *</label>
+              <select id="emulacion-ram" class="form-input">
+                <option value="16">16 GB</option>
+                <option value="8">8 GB</option>
+                <option value="32">32 GB</option>
+                <option value="4">4 GB</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="modal-perfil-cookies">Importador Inteligente de Cookies (Auto-Parse Formats)</label>
+            <textarea 
+              id="modal-perfil-cookies" 
+              class="form-input textarea-cookies" 
+              placeholder='Pega aquí tu JSON o texto crudo de cookies...'
+              onpaste="parsearCookiesPegadas(event)"
+            ></textarea>
+            <span class="form-hint" style="font-size: 10px; color: var(--texto-secundario); margin-top: 4px;">Detección automática de JSON y formato Netscape/Raw String al pegar.</span>
+          </div>
+
+          <h4 class="col-title" style="margin-top: 6px;">Camuflaje de Huella Térmica</h4>
+          <div class="toggles-grid">
+            <label class="toggle-control">
+              <input type="checkbox" id="modal-perfil-useragent" checked />
+              <span class="toggle-label">Randomizar User-Agent</span>
+            </label>
+
+            <label class="toggle-control">
+              <input type="checkbox" id="modal-perfil-canvas" checked />
+              <span class="toggle-label">Enmascarar Canvas (Ruido)</span>
+            </label>
+
+            <label class="toggle-control">
+              <input type="checkbox" id="modal-perfil-webgl" checked />
+              <span class="toggle-label">Spoofing WebGL (Gráfica)</span>
+            </label>
+
+            <label class="toggle-control">
+              <input type="checkbox" id="modal-perfil-hardware" checked />
+              <span class="toggle-label">Ocultar Hardware Concurrency</span>
+            </label>
+
+            <label class="toggle-control">
+              <input type="checkbox" id="modal-perfil-webrtc" checked />
+              <span class="toggle-label">Bloquear Fugas WebRTC (IP Real)</span>
+            </label>
+
+            <label class="toggle-control">
+              <input type="checkbox" id="modal-perfil-timezone" checked />
+              <span class="toggle-label">Sincronizar Zona Horaria con Proxy</span>
+            </label>
+
+            <label class="toggle-control">
+              <input type="checkbox" id="modal-perfil-screen" checked />
+              <span class="toggle-label">Enmascarar Resolución de Pantalla</span>
+            </label>
+
+            <label class="toggle-control">
+              <input type="checkbox" id="modal-perfil-fonts" checked />
+              <span class="toggle-label">Spoofing de Fuentes (Fonts)</span>
+            </label>
+
+            <label class="toggle-control">
+              <input type="checkbox" id="modal-perfil-audio" checked />
+              <span class="toggle-label">Alterar AudioContext</span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" onclick="cerrarModalPerfil()">Cancelar</button>
+        <button type="submit" id="btn-guardar-perfil" class="btn-submit">Crear Entorno</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL DE LISTA NEGRA GLOBAL (FIREWALL DE SEGURIDAD) -->
+<div id="modal-seguridad-global" class="modal-overlay" style="display: none;">
+  <div class="modal-content" style="max-width: 480px;">
+    <div class="modal-header">
+      <h3 class="modal-title">🛡️ Lista Negra Global (Aplica a todos)</h3>
+      <button class="modal-close" type="button" onclick="cerrarModalGlobal()">&times;</button>
+    </div>
+    <div class="modal-body" style="padding-top: 10px;">
+      <p class="texto-ayuda" style="font-size: 11px; color: var(--text-muted); margin-bottom: 8px;">Las URLs o palabras escritas aquí se bloquearán en TODOS los perfiles del sistema.</p>
+      <textarea id="lista-negra-global" class="form-input textarea-code" placeholder="Ejemplo:&#10;/billing&#10;/pay&#10;/settings" style="height: 150px;"></textarea>
+      <button type="button" class="btn-primary" onclick="guardarListaNegraGlobal()" style="margin-top: 15px; width: 100%;">Guardar Firewall Global</button>
+    </div>
+  </div>
+</div>

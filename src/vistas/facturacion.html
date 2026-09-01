@@ -1,0 +1,68 @@
+<div id="section-facturacion" class="tab-section active">
+  <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <h3 style="font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">Facturación & Gestión Financiera</h3>
+      <p class="section-description">Control de cobros mensuales, renovación de suscripciones e ingresos recurrentes.</p>
+    </div>
+    <div>
+      <input 
+        type="text" 
+        id="buscar-facturacion" 
+        class="form-input" 
+        placeholder="🔍 Buscar por cliente..." 
+        onkeyup="filtrarFacturacion(this.value)" 
+        style="max-width: 280px;" 
+      />
+    </div>
+  </div>
+
+  <!-- REESTRUCTURACIÓN DE LAS TARJETAS KPI (HTML) -->
+  <div class="kpi-financieros-grid">
+    <!-- Tarjeta 1 -->
+    <div class="tarjeta-kpi-finanzas">
+      <div class="kpi-icono icon-green">💰</div>
+      <div class="kpi-datos">
+        <h4>Ingresos Mensuales</h4>
+        <h3 id="kpi-ingresos">$0.00 USD</h3>
+        <p>Suma total de tarifas activas</p>
+      </div>
+    </div>
+    <!-- Tarjeta 2 -->
+    <div class="tarjeta-kpi-finanzas">
+      <div class="kpi-icono icon-red">⏳</div>
+      <div class="kpi-datos">
+        <h4>Pagos Pendientes</h4>
+        <h3 id="kpi-pendientes">0</h3>
+        <p>Vencen en &lt;3 días o vencidos</p>
+      </div>
+    </div>
+    <!-- Tarjeta 3 -->
+    <div class="tarjeta-kpi-finanzas">
+      <div class="kpi-icono icon-blue">👥</div>
+      <div class="kpi-datos">
+        <h4>Clientes Activos</h4>
+        <h3 id="kpi-activos">0</h3>
+        <p>Suscripción vigente al día</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLA FINANCIERA -->
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Packs Asignados</th>
+          <th>Tarifa Mensual ($ USD)</th>
+          <th>Próximo Pago</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-facturacion-body">
+        <!-- Carga dinámica -->
+      </tbody>
+    </table>
+  </div>
+</div>

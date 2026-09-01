@@ -1,0 +1,107 @@
+<div id="section-equipo" class="tab-section active">
+  <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <p class="section-description">Administra el personal interno con acceso administrativo o permisos de revendedor (Resellers).</p>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <input 
+        type="text" 
+        id="buscar-staff" 
+        class="form-input" 
+        placeholder="🔍 Buscar miembros..." 
+        onkeyup="filtrarStaff(this.value)" 
+        style="max-width: 240px;" 
+      />
+      <button type="button" class="btn-primary" id="btn-nuevo-miembro" style="padding: 8px 14px; font-size: 12px; font-weight: 600;" onclick="abrirModalCrearPersonal()">+ Nuevo Miembro</button>
+    </div>
+  </div>
+
+  <!-- Tabla de Personal / Staff -->
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Usuario</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Última Actividad</th>
+          <th>Contraseña</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-staff-body">
+        <!-- Carga dinámica -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- MODAL CREACIÓN / EDICIÓN DE MIEMBRO DE STAFF -->
+<div id="modal-nuevo-staff" class="modal-overlay" style="display: none;">
+  <div class="modal-content" style="max-width: 460px;">
+    <div class="modal-header">
+      <h3 class="modal-title" id="modal-staff-titulo">Crear Miembro de Equipo</h3>
+      <button class="modal-close" type="button" onclick="cerrarModalStaff()">&times;</button>
+    </div>
+
+    <form id="form-nuevo-staff" onsubmit="guardarStaff(event)">
+      <input type="hidden" id="modal-staff-id" value="" />
+
+      <div class="form-group">
+        <label for="modal-staff-usuario">Nombre de Usuario *</label>
+        <input 
+          type="text" 
+          id="modal-staff-usuario" 
+          class="form-input" 
+          placeholder="ej. admin_carlos" 
+          required 
+        />
+      </div>
+
+      <div class="grid-2-col">
+        <div class="form-group">
+          <label for="rol-nuevo-miembro">Rol del Usuario *</label>
+          <select id="rol-nuevo-miembro" class="form-input input-form" onchange="const r = this.value.toLowerCase() === 'reseller' ? 'Reseller' : 'Admin'; document.getElementById('modal-staff-rol').value = r;">
+            <option value="admin">Administrador</option>
+            <option value="reseller">Reseller (Revendedor)</option>
+          </select>
+          <select id="modal-staff-rol" class="form-input" style="display: none;">
+            <option value="Admin">Admin</option>
+            <option value="Reseller">Reseller</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="modal-staff-estado">Estado de Acceso</label>
+          <select id="modal-staff-estado" class="form-input">
+            <option value="Activo">Activo</option>
+            <option value="Inactivo">Inactivo</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="modal-staff-password">Contraseña *</label>
+        <input 
+          type="text" 
+          id="modal-staff-password" 
+          class="form-input" 
+          placeholder="••••••••" 
+          required 
+        />
+      </div>
+
+      <div class="form-group">
+        <label style="margin-bottom: 8px;">Permisos Granulares de Acceso</label>
+        <div id="lista-permisos-staff" style="display: flex; gap: 8px; flex-wrap: wrap; padding: 4px 0;">
+          <!-- Carga dinámica de Píldoras Interactivas -->
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" onclick="cerrarModalStaff()">Cancelar</button>
+        <button type="submit" id="btn-guardar-staff" class="btn-submit">Guardar Miembro</button>
+      </div>
+    </form>
+  </div>
+</div>

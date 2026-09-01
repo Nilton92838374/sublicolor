@@ -1,0 +1,46 @@
+<div id="section-anuncios" class="tab-section active" style="max-width: 1000px; margin: 0 auto;">
+  
+  <div style="margin-bottom: 24px;">
+    <h2 style="font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 4px;">📢 Módulo de Anuncios y Comunicados</h2>
+    <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Publica avisos globales o notificaciones de mantenimiento que aparecerán inmediatamente en la campanita (🔔) del panel del cliente.</p>
+  </div>
+
+  <div class="grid-2-col" style="align-items: start; gap: 24px;">
+    
+    <!-- COLUMNA IZQUIERDA: CREAR ANUNCIO -->
+    <div style="background-color: var(--bg-card); border: 1px solid var(--border-light); border-radius: 16px; padding: 24px; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
+      <h3 style="font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 16px;">Redactar Nuevo Aviso</h3>
+      
+      <form id="form-publicar-anuncio" onsubmit="publicarAnuncio(event)">
+        <div class="form-group">
+          <label for="texto-anuncio">Mensaje del Comunicado *</label>
+          <textarea 
+            id="texto-anuncio" 
+            class="form-input" 
+            rows="4" 
+            placeholder="ej. Mantenimiento programado en Netflix de 2:00 PM a 3:00 PM. Disculpen las molestias." 
+            required
+            style="resize: vertical; font-family: inherit; font-size: 13px;"
+          ></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
+          <button type="submit" class="btn-submit" style="padding: 10px 20px; font-size: 13px; font-weight: 600; background-color: var(--accent-blue); color: #ffffff; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 6px rgba(59, 130, 246, 0.25);">
+            📢 Publicar Aviso
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- COLUMNA DERECHA: HISTORIAL DE ANUNCIOS -->
+    <div style="background-color: var(--bg-card); border: 1px solid var(--border-light); border-radius: 16px; padding: 24px; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
+      <h3 style="font-size: 15px; font-weight: 700; color: var(--text-main); margin-bottom: 16px;">Historial de Anuncios Enviados</h3>
+      
+      <div id="lista-anuncios-admin" style="display: flex; flex-direction: column; gap: 12px; max-height: 400px; overflow-y: auto;">
+        <!-- Carga dinámica -->
+      </div>
+    </div>
+
+  </div>
+
+</div>

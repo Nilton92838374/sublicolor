@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Sublicolor - Centro de Comando Antidetect Multicuenta">
+  <meta name="theme-color" content="#ffffff">
+  <title>Sublicolor - Centro de Comando</title>
+  
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  
+  <!-- CDNs y Configuración (Carga diferida no bloqueante) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="supabase-config.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr" defer></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js" defer></script>
+</head>
+<body>
+  <h1 class="sr-only" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Sublicolor Antidetect</h1>
+
+  <!-- Contenedor de Notificaciones Toast Flotantes -->
+  <div id="toast-container" aria-live="polite"></div>
+
+  <div class="app-container">
+
+    <!-- VISTA 1: LOGIN (Opcional) -->
+    <section id="vista-login" class="vista hidden" aria-labelledby="login-title">
+      <div class="toast-notificacion" id="toast-login-index" style="display: none;">
+        <div class="toast-icono-check" aria-hidden="true">✓</div>
+        <div class="toast-texto">
+          <h4>Operación Exitosa</h4>
+          <p>Sesión cerrada correctamente.</p>
+        </div>
+        <button type="button" class="toast-cerrar" onclick="this.parentElement.style.display='none'" aria-label="Cerrar notificación">&times;</button>
+      </div>
+
+      <div class="login-card">
+        <div class="login-cabecera">
+          <div class="login-logo-badge" aria-hidden="true">
+            <span class="logo-dot"></span>
+          </div>
+          <h2 id="login-title">SUBLICOLOR</h2>
+        </div>
+        <p class="login-subtitulo">Gestión de Perfiles Multicuenta</p>
+        <div class="login-separador" role="separator"></div>
+        <div class="login-seguridad">
+          <span>🔒 Acceso seguro a la plataforma</span>
+        </div>
+
+        <form id="form-login" class="login-formulario" onsubmit="handleLogin(event)">
+          <div class="grupo-input">
+            <label for="login-usuario">Usuario</label>
+            <div class="input-con-icono">
+              <span class="icono-izq" aria-hidden="true">👤</span>
+              <input 
+                type="text" 
+                id="login-usuario" 
+                placeholder="Ingresa tu usuario (Opcional)" 
+                autocomplete="username"
+              />
+            </div>
+          </div>
+
+          <div class="grupo-input">
+            <label for="login-password">Contraseña</label>
+            <div class="input-con-icono">
+              <span class="icono-izq" aria-hidden="true">🔒</span>
+              <input 
+                type="password" 
+                id="login-password" 
+                placeholder="Ingresa tu contraseña (Opcional)" 
+                autocomplete="current-password"
+              />
+              <button type="button" class="btn-mostrar-pass" onclick="const p=document.getElementById('login-password'); p.type=p.type==='password'?'text':'password';" aria-label="Mostrar u ocultar contraseña">👁️</button>
+            </div>
+          </div>
+
+          <button type="submit" id="btn-login" class="btn-ingresar">
+            Ingresar →
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- VISTA 2: PANEL DE CONTROL (Activo por defecto) -->
+    <div id="vista-panel" class="vista active">
+      <!-- Menú Lateral -->
+      <aside class="sidebar" aria-label="Menú Principal">
+        <div class="sidebar-header">
+          <div class="sidebar-logo">SUBLICOLOR</div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <a class="nav-item active" href="#" onclick="switchTab('inicio')">
+            <span>🏠 Inicio</span>
+          </a>
+          <a class="nav-item" href="#" onclick="switchTab('perfiles')">
+            <span>🎭 Perfiles</span>
+          </a>
+          <a class="nav-item" href="#" onclick="switchTab('proxies')">
+            <span>🌐 Proxys</span>
+          </a>
+          <a class="nav-item" href="#" onclick="switchTab('grupos')">
+            <span>🏷️ Grupos / Etiquetas</span>
+          </a>
+          <a class="nav-item" href="#" onclick="switchTab('usuarios')">
+            <span>👥 Usuarios / Clientes</span>
+          </a>
+          <a class="nav-item" href="#" onclick="switchTab('facturacion')">
+            <span>💰 Facturación</span>
+          </a>
+          <a class="nav-item" href="#" onclick="switchTab('equipo')">
+            <span>👔 Equipo / Staff</span>
+          </a>
+          <a class="nav-item" href="#" onclick="switchTab('cuentas')">
+            <span>🗝️ Cuentas</span>
+          </a>
+          <a class="nav-item" href="#" onclick="switchTab('configuracion')">
+            <span>⚙️ Configuración</span>
+          </a>
+          <a class="nav-item" href="#" onclick="switchTab('anuncios')">
+            <span>📢 Anuncios</span>
+          </a>
+          <a class="nav-item" href="#" onclick="switchTab('soporte')">
+            <span>🎧 Tickets de Soporte</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <!-- Tarjeta Premium -->
+          <div class="tarjeta-suscripcion-sidebar">
+            <div class="cabecera-plan">
+              <span class="texto-plan">Plan Actual</span>
+              <span class="icono-corona" aria-hidden="true">♔</span>
+            </div>
+            <h3 class="nombre-plan" id="widget-nombre-plan">--</h3>
+            <div class="estado-plan">
+              <span class="punto-verde" aria-hidden="true"></span> Activo
+            </div>
+            <div class="vence-plan">Vence: <span id="widget-vence">01/12/2026</span></div>
+            <button type="button" class="btn-ver-suscripcion" onclick="abrirModalMiSuscripcion()">Ver Suscripción</button>
+          </div>
+
+          <!-- Perfil de Usuario -->
+          <div class="perfil-usuario-mini">
+            <div class="avatar-mini">
+              <span id="avatar-iniciales">AM</span>
+              <span class="estado-en-linea" aria-hidden="true"></span>
+            </div>
+            <div class="info-usuario-mini">
+              <h4 id="widget-nombre-usuario">Admin Master</h4>
+              <span class="texto-en-linea">En línea</span>
+            </div>
+            <div class="menu-usuario-opciones" style="position: relative;">
+              <button type="button" class="btn-opciones-usuario" onclick="toggleMenuSesion(event)" title="Opciones de usuario" aria-label="Opciones de usuario">⋮</button>
+              <div id="dropdown-sesion" class="dropdown-opciones oculto" style="bottom: 38px; right: 0; position: absolute; min-width: 150px; background: #ffffff; border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow-dropdown); padding: 4px 0; z-index: 1000;">
+                <button type="button" onclick="cerrarSesion()" style="width: 100%; text-align: left; padding: 10px 14px; border: none; background: transparent; cursor: pointer; font-size: 12.5px; font-weight: 600; color: var(--danger-text); display: flex; align-items: center; gap: 8px;">🚪 Cerrar Sesión</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Área Principal -->
+      <div class="main-content">
+        <!-- BARRA SUPERIOR DE NAVEGACIÓN (TOP NAVBAR) -->
+        <header id="top-navbar">
+          <div class="navbar-left">
+            <h2 class="page-title" id="page-title">Dashboard / Inicio</h2>
+          </div>
+
+          <div class="navbar-right">
+            <!-- CAMPANITA DE NOTIFICACIONES / AVISOS (EXCLUSIVA MODO CLIENTE) -->
+            <div class="contenedor-campanita" id="contenedor-campanita-topbar" style="display: none;">
+              <button type="button" class="btn-campana" onclick="toggleNotificaciones(event)" title="Avisos y Cambios" aria-label="Avisos y Cambios de Notificaciones">
+                🔔 <span class="punto-rojo" id="badge-notif-contador">0</span>
+              </button>
+              <div class="dropdown-notificaciones oculto" id="panel-notificaciones">
+                <div class="cabecera-notif"><h4>Avisos y Cambios</h4></div>
+                <div class="lista-notif" id="lista-mensajes-cliente">
+                  <!-- Inyección dinámica -->
+                </div>
+              </div>
+            </div>
+
+            <div class="top-role-simulator" style="display: flex; align-items: center; gap: 6px; margin-right: 12px; background: #f3f4f6; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--border-light);">
+              <label for="select-simulador-rol" style="font-size: 11.5px; color: var(--text-muted); font-weight: 600; cursor: pointer;">Simular Vista:</label>
+              <select id="select-simulador-rol" class="form-input" style="padding: 2px 6px; font-size: 11.5px; border-radius: 6px; width: auto; background: #ffffff; cursor: pointer;" onchange="alternarSimuladorRol(this.value)">
+                <option value="admin">Administrador</option>
+                <option value="cliente">Cliente</option>
+              </select>
+            </div>
+            <div class="top-bar-actions" id="top-bar-actions">
+              <button type="button" class="btn-secondary" id="btn-header-action" style="display: none;" onclick="crearNuevoPerfil()">+ Nuevo Perfil</button>
+            </div>
+            <div class="top-user-badge">
+              <span class="user-status-dot" aria-hidden="true"></span>
+              <span id="top-user-name" class="top-user-name">Admin</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- CONTENEDOR DINÁMICO DE VISTAS (VACÍO MAESTRO) -->
+        <main id="contenido-principal" class="content-body" aria-label="Contenido Principal"></main>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODAL DETALLE DE MI SUSCRIPCIÓN -->
+  <div id="modal-mi-suscripcion" class="modal-overlay" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modal-suscripcion-title">
+    <div class="modal-content" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-suscripcion-title">Detalles de mi Suscripción <span class="icono-corona" aria-hidden="true">♔</span></h3>
+        <button class="modal-close" type="button" onclick="cerrarModalMiSuscripcion()" aria-label="Cerrar modal">&times;</button>
+      </div>
+      <div class="modal-body" style="padding-top: 10px;">
+        <p style="font-size: 13.5px; color: var(--text-main); margin-bottom: 6px;"><strong>Plan:</strong> <span id="detalle-plan">--</span> <span class="icono-corona" aria-hidden="true">♔</span></p>
+        <p style="font-size: 13.5px; color: var(--text-main); margin-bottom: 6px;"><strong>Estado:</strong> Activo (Vence el <span id="detalle-vence">01/12/2026</span>)</p>
+        <p style="font-size: 13.5px; color: var(--text-main); margin-bottom: 12px;"><strong>Perfiles Asignados:</strong> <span id="detalle-cantidad-perfiles">0</span></p>
+        <hr style="border: 0; border-top: 1px solid var(--border-light); margin: 12px 0;">
+        <h4 style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">Mis Perfiles:</h4>
+        <ul id="lista-resumen-perfiles" style="list-style: none; padding: 0; margin: 0; max-height: 180px; overflow-y: auto;"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPTS MODULARES DE LA APLICACIÓN (Carga no bloqueante diferida) -->
+  <script src="src/js/seguridad.js" defer></script>
+  <script src="src/js/utils.js" defer></script>
+  <script src="src/js/proxies.js" defer></script>
+  <script src="src/js/grupos.js" defer></script>
+  <script src="src/js/perfiles.js" defer></script>
+  <script src="src/js/usuarios.js" defer></script>
+  <script src="src/js/equipo.js" defer></script>
+  <script src="src/js/cuentas.js" defer></script>
+  <script src="src/js/facturacion.js" defer></script>
+  <script src="src/js/dashboard-cliente.js" defer></script>
+  <script src="src/js/anuncios.js" defer></script>
+  <script src="src/js/soporte.js" defer></script>
+  <script src="src/js/inicio.js" defer></script>
+  <script src="src/js/configuracion.js" defer></script>
+  <script src="src/js/navegacion.js" defer></script>
+</body>
+</html>

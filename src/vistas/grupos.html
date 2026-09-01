@@ -1,0 +1,61 @@
+<div id="section-grupos" class="tab-section active">
+  <div class="section-header">
+    <p class="section-description">Administra las categorías de organización y etiquetas de camuflaje para los perfiles.</p>
+  </div>
+
+  <div class="grid-2-col">
+    <!-- COLUMNA 1: CATEGORÍAS / GRUPOS DE PERFILES -->
+    <div class="col-section" style="background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 24px;">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+        <span style="font-size: 18px;">📁</span>
+        <h4 class="col-title" style="margin-bottom: 0;">Categorías / Grupos de Perfiles</h4>
+      </div>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+        Los grupos permiten empaquetar perfiles y asignarlos en lote a los clientes.
+      </p>
+
+      <form onsubmit="event.preventDefault(); agregarGrupo();" style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <input 
+          type="text" 
+          id="input-nuevo-grupo" 
+          class="form-input" 
+          placeholder="ej. Cuentas de Ventas, Farming, VIP" 
+        />
+        <button type="button" onclick="agregarGrupo()" class="btn-submit" style="white-space: nowrap;">+ Añadir</button>
+      </form>
+
+      <h5 style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.8px;">GRUPOS REGISTRADOS</h5>
+      <div id="lista-grupos-registrados" class="contenedor-chips-dinamicos">
+        <!-- Carga dinámica de grupos -->
+      </div>
+      <div id="container-lista-grupos" style="display: none;"></div>
+    </div>
+
+    <!-- COLUMNA 2: ETIQUETAS DEL SISTEMA -->
+    <div class="col-section" style="background-color: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 24px;">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+        <span style="font-size: 18px;">🏷️</span>
+        <h4 class="col-title" style="margin-bottom: 0;">Etiquetas del Sistema</h4>
+      </div>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+        Etiquetas rápidas para la filtración y clasificación visual de entornos aislados.
+      </p>
+
+      <form onsubmit="event.preventDefault(); agregarEtiqueta();" style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <input 
+          type="text" 
+          id="input-nueva-etiqueta" 
+          class="form-input" 
+          placeholder="ej. Ads, USA, HighRisk" 
+        />
+        <button type="button" onclick="agregarEtiqueta()" class="btn-submit" style="white-space: nowrap;">+ Añadir</button>
+      </form>
+
+      <h5 style="font-size: 11px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.8px;">ETIQUETAS REGISTRADAS</h5>
+      <div id="lista-etiquetas-registradas" class="contenedor-chips-dinamicos">
+        <!-- Carga dinámica de etiquetas -->
+      </div>
+      <div id="container-lista-etiquetas" style="display: none;"></div>
+    </div>
+  </div>
+</div>

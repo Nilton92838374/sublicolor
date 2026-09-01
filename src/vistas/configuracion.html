@@ -1,0 +1,99 @@
+<div id="section-configuracion" class="tab-section active">
+  <div class="section-header">
+    <div>
+      <h3 style="font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 4px;">Configuración de Sistema & Ajustes</h3>
+      <p class="section-description">Administra las preferencias generales, seguridad, respuestas automáticas y respaldo de datos.</p>
+    </div>
+  </div>
+
+  <!-- CUADRÍCULA DE 4 TARJETAS DE AJUSTES (GRID 2x2) -->
+  <div class="grid-2-col" style="gap: 24px;">
+    
+    <!-- TARJETA 1: BASE DE DATOS LOCAL -->
+    <div class="col-section" style="background-color: var(--bg-card); border: 1px solid var(--border-light); border-radius: 16px; padding: 24px;">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+        <span style="font-size: 18px;">💾</span>
+        <h4 style="font-size: 14px; font-weight: 700; color: var(--text-main);">Base de Datos Local</h4>
+      </div>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+        Exporta copias de seguridad de todos tus perfiles, proxys, clientes y configuraciones a un archivo JSON para migración o resguardo.
+      </p>
+
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button type="button" class="btn-submit" onclick="exportarBaseDeDatos()">📥 Exportar JSON</button>
+        <button type="button" class="btn-secondary" onclick="document.getElementById('input-importar-db').click()">📤 Importar JSON</button>
+        <input type="file" id="input-importar-db" accept=".json" style="display: none;" onchange="importarBaseDeDatos(event)" />
+      </div>
+    </div>
+
+    <!-- TARJETA 2: SEGURIDAD DE LA APP -->
+    <div class="col-section" style="background-color: var(--bg-card); border: 1px solid var(--border-light); border-radius: 16px; padding: 24px;">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+        <span style="font-size: 18px;">🛡️</span>
+        <h4 style="font-size: 14px; font-weight: 700; color: var(--text-main);">Seguridad de la App</h4>
+      </div>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+        Configura el tiempo de inactividad para bloquear automáticamente el acceso a la aplicación.
+      </p>
+
+      <div class="form-group" style="margin-bottom: 14px;">
+        <label for="config-autobloqueo">Auto-bloquear sesión tras inactividad</label>
+        <select id="config-autobloqueo" class="form-input" onchange="guardarConfiguracionesGenerales()">
+          <option value="0">Nunca</option>
+          <option value="15">15 minutos</option>
+          <option value="30">30 minutos</option>
+          <option value="60">1 hora</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- TARJETA 3: COMUNICACIÓN Y HORARIOS -->
+    <div class="col-section" style="background-color: var(--bg-card); border: 1px solid var(--border-light); border-radius: 16px; padding: 24px;">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+        <span style="font-size: 18px;">💬</span>
+        <h4 style="font-size: 14px; font-weight: 700; color: var(--text-main);">Comunicación & Horarios</h4>
+      </div>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 14px;">
+        Define tu horario de atención y el mensaje automático para clientes fuera de turno.
+      </p>
+
+      <div class="grid-2-col" style="margin-bottom: 10px;">
+        <div class="form-group">
+          <label for="config-hora-inicio">Inicio de Atención</label>
+          <input type="time" id="config-hora-inicio" class="form-input" value="08:00" />
+        </div>
+        <div class="form-group">
+          <label for="config-hora-fin">Fin de Atención</label>
+          <input type="time" id="config-hora-fin" class="form-input" value="20:00" />
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 14px;">
+        <label for="config-mensaje-fuera-horario">Mensaje de Auto-respuesta Fuera de Horario</label>
+        <textarea id="config-mensaje-fuera-horario" class="form-input" style="min-height: 70px; font-family: inherit; font-size: 12px; resize: vertical;" placeholder="Estimado cliente, nuestro horario de atención es de 08:00 a 20:00. Responderemos a la brevedad."></textarea>
+      </div>
+
+      <div>
+        <button type="button" class="btn-submit" style="padding: 8px 16px; font-size: 12px;" onclick="guardarConfiguracionesGenerales()">Guardar Ajustes</button>
+      </div>
+    </div>
+
+    <!-- TARJETA 4: LIMPIEZA PROFUNDA DEL MOTOR -->
+    <div class="col-section" style="background-color: var(--bg-card); border: 1px solid var(--border-light); border-radius: 16px; padding: 24px;">
+      <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+        <span style="font-size: 18px;">🧹</span>
+        <h4 style="font-size: 14px; font-weight: 700; color: var(--text-main);">Limpieza Profunda del Motor</h4>
+      </div>
+      <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 16px;">
+        Elimina archivos temporales, registros de caché y residuos de Puppeteer para liberar espacio en disco y mantener el rendimiento del motor antidetect.
+      </p>
+
+      <div>
+        <button type="button" class="btn-secondary" style="background: #fee2e2; border-color: #fca5a5; color: #dc2626;" onclick="limpiarCacheMotorBackend()">
+          🔴 Limpiar Caché y Cookies del Motor Antidetect
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,87 @@
+<div id="section-dashboard-cliente" class="tab-section active" style="max-width: 1080px; margin: 0 auto; padding: 12px 0;">
+  
+  <!-- BANNER DE BIENVENIDA CLIENTE (ESTRUCTURA 2 COLUMNAS FLEXBOX) -->
+  <div class="banner-bienvenida-cliente">
+    <!-- Columna Izquierda: Saludo y Acciones -->
+    <div class="banner-info-principal">
+      <h2>¡Bienvenido, <span id="nombre-cliente-banner">Cliente Demo</span>!</h2>
+      <p class="texto-instrucciones">Haz clic en <strong>▶️ ABRIR CUENTA</strong> en cualquiera de tus perfiles asignados para iniciar sesión con 1 solo clic.</p>
+      <div class="acciones-rapidas">
+        <button type="button" class="btn-secundario" onclick="abrirModalSoporteCliente()">🎧 Soporte</button>
+        <button type="button" class="btn-peligro-suave" onclick="cerrarSesion()">🚪 Cerrar Sesión</button>
+      </div>
+    </div>
+
+    <!-- Columna Derecha: Tarjeta de Suscripción -->
+    <div class="banner-caja-suscripcion">
+      <div class="suscripcion-cabecera">
+        <span class="badge-verde">● Suscripción Activa</span>
+        <span class="badge-dias" id="dias-restantes-cliente">Quedan 30 días</span>
+      </div>
+      <div class="suscripcion-cuerpo">
+        <div class="dato-fila"><span>Plan:</span> <strong><span id="plan-cliente-actual">Basic</span> <span class="icono-corona">♔</span></strong></div>
+        <div class="dato-fila"><span>Usuario:</span> <strong id="nombre-cliente-actual">Cliente Demo</strong></div>
+        <div class="dato-fila"><span>Vence:</span> <strong id="fecha-vence-cliente">01/12/2026</strong></div>
+      </div>
+      <button type="button" class="btn-principal btn-ver-suscripcion" onclick="abrirModalMiSuscripcion()">Ver Suscripción</button>
+    </div>
+  </div>
+
+  <!-- FILTROS POR GRUPO / CHIPS -->
+  <div id="filtros-cliente" class="filtros-chips"></div>
+
+  <!-- BÚSQUEDA RÁPIDA DE SERVICIOS FLEX -->
+  <div class="cabecera-cuentas-flex">
+    <h3>CUENTAS ASIGNADAS</h3>
+    <div class="buscador-contenedor">
+      <input 
+        type="text" 
+        id="buscar-dashboard-cliente" 
+        class="form-input" 
+        placeholder="🔍 Buscar mi navegador..." 
+        onkeyup="filtrarDashboardCliente(this.value)" 
+        style="max-width: 280px;" 
+      />
+    </div>
+  </div>
+
+  <!-- CUADRÍCULA DE TARJETAS DE SERVICIO COMPACTA -->
+  <div id="grid-tarjetas-cliente" class="grid-cliente-compacto">
+    <!-- Carga dinámica -->
+  </div>
+</div>
+
+<!-- MODAL DE SOPORTE DEL CLIENTE -->
+<div id="modal-soporte-cliente" class="modal-overlay" style="display: none;">
+  <div class="modal-content" style="max-width: 480px;">
+    <div class="modal-header">
+      <h3 class="modal-title">🎧 Contactar a Soporte Técnico</h3>
+      <button class="modal-close" type="button" onclick="cerrarModalSoporteCliente()">&times;</button>
+    </div>
+    <form id="form-soporte-cliente" onsubmit="enviarTicketSoporte(event)">
+      <div class="form-group" style="margin-bottom: 14px;">
+        <label for="soporte-cuenta-afectada">Cuenta / Servicio con Problema</label>
+        <select id="soporte-cuenta-afectada" class="form-input">
+          <option value="General / Consulta">General / Consulta Técnica</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="soporte-mensaje">Describe tu problema o solicitud *</label>
+        <textarea 
+          id="soporte-mensaje" 
+          class="form-input" 
+          rows="4" 
+          placeholder="ej. No puedo ingresar a mi perfil de Netflix, solicita código de hogar." 
+          required 
+          style="resize: vertical; font-family: inherit; font-size: 13px;"
+        ></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" onclick="cerrarModalSoporteCliente()">Cancelar</button>
+        <button type="submit" class="btn-submit" style="background-color: var(--accent-blue);">Enviar Ticket</button>
+      </div>
+    </form>
+  </div>
+</div>

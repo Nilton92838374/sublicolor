@@ -1,0 +1,101 @@
+<div id="section-cuentas" class="tab-section active">
+  <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <p class="section-description">Gestión e inventario de cuentas de streaming, redes y servicios vinculados.</p>
+    </div>
+    <div style="display: flex; gap: 12px; align-items: center;">
+      <input 
+        type="text" 
+        id="buscar-cuenta" 
+        class="form-input" 
+        placeholder="🔍 Buscar cuentas..." 
+        onkeyup="filtrarCuentas(this.value)" 
+        style="max-width: 280px;" 
+      />
+      <button type="button" class="btn-secondary" style="border-color: var(--color-acento); color: var(--color-acento);" onclick="crearNuevaCuenta()">+ Nueva Cuenta</button>
+    </div>
+  </div>
+
+  <!-- Tabla de Inventario de Cuentas -->
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Plataforma / Servicio</th>
+          <th>Correo Electrónico</th>
+          <th>Contraseña</th>
+          <th>Fecha de Expiración</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-cuentas-body">
+        <!-- Carga dinámica -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- MODAL CREACIÓN / EDICIÓN DE CUENTA -->
+<div id="modal-nueva-cuenta" class="modal-overlay" style="display: none;">
+  <div class="modal-content" style="max-width: 460px;">
+    <div class="modal-header">
+      <h3 class="modal-title" id="modal-cuenta-titulo">Registrar Nueva Cuenta</h3>
+      <button class="modal-close" type="button" onclick="cerrarModalCuenta()">&times;</button>
+    </div>
+
+    <form id="form-nueva-cuenta" onsubmit="guardarCuenta(event)">
+      <input type="hidden" id="modal-cuenta-id" value="" />
+
+      <div class="form-group">
+        <label for="modal-cuenta-plataforma">Plataforma / Servicio *</label>
+        <input 
+          type="text" 
+          id="modal-cuenta-plataforma" 
+          class="form-input" 
+          placeholder="ej. Netflix Premium, Canva Pro, Facebook Ads" 
+          required 
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="modal-cuenta-correo">Correo Electrónico *</label>
+        <input 
+          type="email" 
+          id="modal-cuenta-correo" 
+          class="form-input" 
+          placeholder="cuenta@ejemplo.com" 
+          required 
+        />
+      </div>
+
+      <div class="grid-2-col">
+        <div class="form-group">
+          <label for="modal-cuenta-password">Contraseña *</label>
+          <input 
+            type="text" 
+            id="modal-cuenta-password" 
+            class="form-input" 
+            placeholder="••••••••" 
+            required 
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="modal-cuenta-expiracion">Fecha de Expiración *</label>
+          <input 
+            type="date" 
+            id="modal-cuenta-expiracion" 
+            class="form-input" 
+            required 
+          />
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" onclick="cerrarModalCuenta()">Cancelar</button>
+        <button type="submit" id="btn-guardar-cuenta" class="btn-submit">Guardar Cuenta</button>
+      </div>
+    </form>
+  </div>
+</div>

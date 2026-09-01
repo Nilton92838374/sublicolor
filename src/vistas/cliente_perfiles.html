@@ -1,0 +1,35 @@
+<div id="section-cliente-perfiles" class="tab-section active">
+  <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <p class="section-description">Entornos aislados asignados a tu cuenta de cliente.</p>
+    </div>
+    <div>
+      <input 
+        type="text" 
+        id="buscar-perfil-cliente" 
+        class="form-input" 
+        placeholder="🔍 Buscar perfiles asignados..." 
+        onkeyup="filtrarPerfilesCliente(this.value)" 
+        style="max-width: 320px;" 
+      />
+    </div>
+  </div>
+
+  <!-- Tabla de Perfiles del Cliente (Solo Lectura + Abrir) -->
+  <div class="table-wrapper">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Nombre del Perfil</th>
+          <th>Estado</th>
+          <th>Proxy Asignado</th>
+          <th>Último Acceso</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-cliente-perfiles-body">
+        <!-- Carga dinámica para cliente -->
+      </tbody>
+    </table>
+  </div>
+</div>
