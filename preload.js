@@ -39,7 +39,9 @@ contextBridge.exposeInMainWorld('api', {
   recibirErrorMotor: (callback) => ipcRenderer.on('error-motor', (event, mensaje) => callback(mensaje)),
   verificarProxy: (datosProxy) => ipcRenderer.invoke('verificar-proxy', datosProxy),
   limpiarCacheMotor: () => ipcRenderer.invoke('limpiar-cache-motor'),
-  obtenerHardwareId: () => ipcRenderer.invoke('obtener-hardware-id')
+  obtenerHardwareId: () => ipcRenderer.invoke('obtener-hardware-id'),
+  comprobarActualizaciones: () => ipcRenderer.invoke('buscar-actualizaciones'),
+  onEstadoActualizacion: (callback) => ipcRenderer.on('estado-actualizacion', (event, data) => callback(data))
 });
 
 // Compatibilidad con información del sistema

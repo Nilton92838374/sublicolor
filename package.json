@@ -1,6 +1,6 @@
 {
   "name": "sublicolor",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Aplicación de gestión multicuenta elegante y minimalista conectada a Supabase",
   "main": "main.js",
   "scripts": {
@@ -8,7 +8,8 @@
     "ofuscar": "node scripts/ofuscar.js",
     "build": "npm run ofuscar && electron-builder --win",
     "dist": "npm run ofuscar && electron-builder --win --x64",
-    "publish": "npm run ofuscar && electron-builder --win -p always"
+    "release": "npm run ofuscar && electron-builder --win --publish always",
+    "publish": "npm run release"
   },
   "keywords": [
     "electron",
@@ -19,10 +20,11 @@
   "author": "Sublicolor Team",
   "license": "MIT",
   "dependencies": {
-    "@supabase/supabase-js": "^2.45.0",
+    "@supabase/supabase-js": "^2.112.4",
     "axios": "^1.20.0",
     "crypto-js": "^4.2.0",
-    "electron-updater": "^6.3.0",
+    "dotenv": "^17.4.2",
+    "electron-updater": "^6.8.9",
     "https-proxy-agent": "^9.1.0",
     "node-machine-id": "^1.1.12",
     "puppeteer": "^25.9.0"
@@ -34,24 +36,19 @@
   },
   "build": {
     "appId": "com.sublicolor.app",
-    "productName": "Sublicolor Access",
-    "directories": {
-      "output": "dist"
-    },
-    "files": [
-      "**/*"
-    ],
     "win": {
-      "target": "portable",
-      "icon": "build/icon.ico"
+      "target": "nsis"
     },
-    "portable": {
-      "artifactName": "Sublicolor_Portable.exe"
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "runAfterFinish": true
     },
     "publish": [
       {
         "provider": "github",
-        "owner": "sublicolor-org",
+        "owner": "Nilton92838374",
         "repo": "sublicolor"
       }
     ]

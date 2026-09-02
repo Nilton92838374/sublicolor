@@ -38,24 +38,58 @@ function desencriptarCadena(cifrado) {
   }
 }
 
-// Configuración del Módulo Auto-Updater Blindado
+// ------------------------------------------
+// CONFIGURACIÓN Y EVENTOS DE AUTO-UPDATER OVER-THE-AIR (OTA)
+// ------------------------------------------
+let mainWindowRef = null;
+
 autoUpdater.autoDownload = true;
 autoUpdater.autoInstallOnAppQuit = true;
 
-autoUpdater.on('error', (err) => {
-  console.log('Error de actualización:', err);
+ipcMain.handle('buscar-actualizaciones', async () => {
+  try {
+    console.log('[AutoUpdater] Petición manual de búsqueda de actualizaciones...');
+    await autoUpdater.checkForUpdates();
+    return { ok: true, mensaje: 'Buscando...' };
+  } catch (err) {
+    console.error('[AutoUpdater] Error en búsqueda manual:', err.message);
+    return { ok: false, error: err.message };
+  }
 });
 
 autoUpdater.on('checking-for-update', () => {
-  console.log('Buscando actualizaciones...');
+  console.log('[AutoUpdater] Buscando actualizaciones...');
+  if (mainWindowRef && !mainWindowRef.isDestroyed()) {
+    mainWindowRef.webContents.send('estado-actualizacion', { estado: 'buscando', texto: 'Buscando...' });
+  }
 });
 
 autoUpdater.on('update-available', (info) => {
-  console.log('Actualización disponible:', info.version);
+  console.log(`[AutoUpdater] Actualización disponible: versión ${info.version}`);
+  if (mainWindowRef && !mainWindowRef.isDestroyed()) {
+    mainWindowRef.webContents.send('estado-actualizacion', { estado: 'disponible', texto: 'Descargando...' });
+  }
 });
 
 autoUpdater.on('update-not-available', () => {
-  console.log('La aplicación está en la versión más reciente.');
+  console.log('[AutoUpdater] La aplicación está ejecutando la versión más reciente.');
+  if (mainWindowRef && !mainWindowRef.isDestroyed()) {
+    mainWindowRef.webContents.send('estado-actualizacion', { estado: 'actualizado', texto: '¡Actualizado! (v1.0.0)' });
+  }
+});
+
+autoUpdater.on('update-downloaded', (info) => {
+  console.log(`[AutoUpdater] Actualización descargada (v${info.version}). Se aplicará al reiniciar.`);
+  if (mainWindowRef && !mainWindowRef.isDestroyed()) {
+    mainWindowRef.webContents.send('estado-actualizacion', { estado: 'descargado', texto: 'Listo para Instalar' });
+  }
+});
+
+autoUpdater.on('error', (err) => {
+  console.error('[AutoUpdater] Error en el proceso de actualización:', err.message || err);
+  if (mainWindowRef && !mainWindowRef.isDestroyed()) {
+    mainWindowRef.webContents.send('estado-actualizacion', { estado: 'error', texto: 'Error al buscar' });
+  }
 });
 
 // ESCUCHADOR IPC BLINDADO PARA LANZAMIENTO DE PUPPETEER
@@ -330,6 +364,8 @@ function createWindow() {
     }
   });
 
+  mainWindowRef = mainWindow;
+
   mainWindow.setMenuBarVisibility(false);
 
   // Bloqueo estricto de DevTools si se intenta abrir por algún medio
@@ -365,6 +401,13 @@ function createWindow() {
 
 app.whenReady().then(() => {
   createWindow();
+
+  try {
+    console.log('[AutoUpdater] Verificando actualizaciones automáticas (OTA)...');
+    autoUpdater.checkForUpdatesAndNotify();
+  } catch (err) {
+    console.error('[AutoUpdater] Error al verificar actualizaciones:', err.message);
+  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

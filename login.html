@@ -89,21 +89,28 @@
       }
     }
 
-    function ejecutarLoginLocal(e) {
+    async function ejecutarLoginLocal(e) {
       e.preventDefault();
       const userVal = document.getElementById('login-usuario').value.trim();
-      const passVal = document.getElementById('login-password').value;
+      const passVal = document.getElementById('login-password').value.trim();
 
-      const userObj = {
-        rol: 'admin',
-        usuario: userVal || 'Admin Master',
-        permisos: ['crear_clientes', 'eliminar_perfiles', 'gestionar_proxies', 'ver_facturacion', 'acceso_configuracion', 'gestionar_equipo']
-      };
+      if (!userVal || !passVal) {
+        alert('Ingresa tu usuario y contraseña.');
+        return;
+      }
 
-      localStorage.setItem('sublicolor_sesion_activa', JSON.stringify(userObj));
-      localStorage.setItem('sublicolor_usuario_activo', JSON.stringify(userObj));
+      if (userVal === 'Quiroz12432' && passVal === 'quiroz9123123aw123#') {
+        const userObj = {
+          rol: 'admin',
+          usuario: 'Quiroz12432',
+          permisos: ['crear_clientes', 'eliminar_perfiles', 'gestionar_proxies', 'ver_facturacion', 'acceso_configuracion', 'gestionar_equipo']
+        };
+        localStorage.setItem('sublicolor_sesion_activa', JSON.stringify(userObj));
+        window.location.href = 'index.html';
+        return;
+      }
 
-      window.location.href = 'index.html';
+      alert('Credenciales incorrectas.');
     }
   </script>
 </body>

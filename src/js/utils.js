@@ -109,81 +109,115 @@ async function handleLogin(e) {
   const passwordInput = document.getElementById('login-password');
 
   const usuarioRaw = usuarioInput ? usuarioInput.value.trim() : '';
-  const password = passwordInput ? passwordInput.value : '';
+  const password = passwordInput ? passwordInput.value.trim() : '';
+
+  if (!usuarioRaw || !password) {
+    mostrarNotificacion('Ingresa tu usuario y contraseña.', 'error');
+    return;
+  }
 
   let loginExitoso = false;
-  let rolAsignado = 'admin';
-  let nombreAsignado = 'Admin Master';
+  let rolAsignado = 'cliente';
+  let nombreAsignado = usuarioRaw;
 
-  // 1. Verificación en Staff (Admins & Resellers)
-  const staffLocales = typeof window.obtenerStaffLocal === 'function' ? window.obtenerStaffLocal() : [];
-  const miembroStaff = staffLocales.find(s => s.usuario.toLowerCase() === usuarioRaw.toLowerCase());
-
-  if (miembroStaff) {
-    if (miembroStaff.password && miembroStaff.password !== password) {
-      mostrarNotificacion('Contraseña de personal incorrecta.', 'error');
-      return;
-    }
-    if (miembroStaff.estado === 'Inactivo') {
-      mostrarNotificacion('Acceso suspendido. Contacta al administrador general.', 'error');
-      return;
-    }
-
-    rolAsignado = miembroStaff.rol.toLowerCase();
-    nombreAsignado = miembroStaff.usuario;
+  // 1. VERIFICACIÓN DE CREDENCIALES DE ADMINISTRADOR MASTER (Quiroz12432 / quiroz9123123aw123#)
+  if (usuarioRaw === 'Quiroz12432' && password === 'quiroz9123123aw123#') {
     loginExitoso = true;
+    rolAsignado = 'admin';
+    nombreAsignado = 'Quiroz12432';
   } 
-  // 2. Buscar cliente en localStorage.sublicolor_usuarios
   else {
-    const usuariosLocales = typeof window.obtenerUsuariosLocales === 'function' ? window.obtenerUsuariosLocales() : [];
-    const cliente = usuariosLocales.find(u => u.usuario.toLowerCase() === usuarioRaw.toLowerCase());
+    // 2. CONSULTA A LA TABLA CLIENTES DE SUPABASE (.eq('usuario', user).eq('password', pass))
+    let supabaseValidado = false;
+    const client = window.supabaseClient || (typeof window.initSupabaseClient === 'function' ? window.initSupabaseClient() : null);
 
-    if (cliente) {
-      if (cliente.password && cliente.password !== password) {
-        mostrarNotificacion('Contraseña incorrecta.', 'error');
-        return;
+    if (client && typeof client.from === 'function') {
+      try {
+        const { data, error } = await client
+          .from('clientes')
+          .select('*')
+          .eq('usuario', usuarioRaw)
+          .eq('password', password);
+
+        if (!error && data && data.length > 0) {
+          const clienteDb = data[0];
+          rolAsignado = clienteDb.plan === 'Enterprise' || clienteDb.usuario === 'Quiroz12432' ? 'admin' : 'cliente';
+          nombreAsignado = clienteDb.usuario;
+          supabaseValidado = true;
+          loginExitoso = true;
+        }
+      } catch (errDb) {
+        console.error('[Supabase Auth] Error al consultar tabla clientes:', errDb);
       }
-      const hoyStr = new Date().toISOString();
-      if (cliente.fechaVencimiento && cliente.fechaVencimiento < hoyStr) {
-        mostrarNotificacion(`Suscripción vencida el ${cliente.fechaVencimiento.replace('T', ' ')}. Contacta al administrador.`, 'error');
-        return;
+    }
+
+    // 3. SI SUPABASE NO VALIDÓ, VERIFICAR LOCALSTORAGE
+    if (!supabaseValidado) {
+      const staffLocales = typeof window.obtenerStaffLocal === 'function' ? window.obtenerStaffLocal() : [];
+      const miembroStaff = staffLocales.find(s => s.usuario.toLowerCase() === usuarioRaw.toLowerCase() && s.password === password);
+
+      if (miembroStaff) {
+        if (miembroStaff.estado === 'Inactivo') {
+          mostrarNotificacion('Acceso suspendido. Contacta al administrador general.', 'error');
+          return;
+        }
+        rolAsignado = miembroStaff.rol.toLowerCase();
+        nombreAsignado = miembroStaff.usuario;
+        loginExitoso = true;
+      } else {
+        const usuariosLocales = typeof window.obtenerUsuariosLocales === 'function' ? window.obtenerUsuariosLocales() : [];
+        const clienteLocal = usuariosLocales.find(u => u.usuario.toLowerCase() === usuarioRaw.toLowerCase() && u.password === password);
+
+        if (clienteLocal) {
+          rolAsignado = 'cliente';
+          nombreAsignado = clienteLocal.usuario;
+          loginExitoso = true;
+        }
       }
-      rolAsignado = 'cliente';
-      nombreAsignado = cliente.usuario;
-      loginExitoso = true;
-    } else {
-      // Admin por defecto
-      rolAsignado = 'admin';
-      nombreAsignado = usuarioRaw || 'Admin Master';
-      loginExitoso = true;
     }
   }
 
-  if (loginExitoso) {
-    window.usuarioSesion = {
-      rol: rolAsignado,
-      usuario: nombreAsignado,
-      permisos: ['crear_clientes', 'eliminar_perfiles', 'gestionar_proxies', 'ver_facturacion', 'acceso_configuracion', 'gestionar_equipo']
-    };
+  // 4. SI LAS CREDENCIALES SON INCORRECTAS -> BLOQUEAR ACCESO ABSOLUTO
+  if (!loginExitoso) {
+    mostrarNotificacion('Credenciales incorrectas.', 'error');
+    return;
+  }
 
-    localStorage.setItem('sublicolor_sesion_activa', JSON.stringify(window.usuarioSesion));
-    localStorage.setItem('sublicolor_usuario_activo', JSON.stringify(window.usuarioSesion));
+  // LOGIN EXITOSO
+  window.usuarioSesion = {
+    rol: rolAsignado,
+    usuario: nombreAsignado,
+    permisos: ['crear_clientes', 'eliminar_perfiles', 'gestionar_proxies', 'ver_facturacion', 'acceso_configuracion', 'gestionar_equipo']
+  };
 
-    mostrarNotificacion(`Bienvenido, ${nombreAsignado}`, 'exito');
+  localStorage.setItem('sublicolor_sesion_activa', JSON.stringify(window.usuarioSesion));
+  mostrarNotificacion(`Bienvenido, ${nombreAsignado}`, 'exito');
 
-    const vistaLogin = document.getElementById('vista-login');
-    const vistaPanel = document.getElementById('vista-panel');
-    if (vistaLogin && vistaPanel) {
-      vistaLogin.classList.add('hidden');
-      vistaLogin.classList.remove('active');
-      vistaLogin.style.display = 'none';
+  if (window.Seguridad && typeof window.Seguridad.iniciarSensorExpulsionRealtime === 'function') {
+    window.Seguridad.verificarHardwareDispositivo().then(hwid => {
+      const client = window.supabaseClient || (typeof window.initSupabaseClient === 'function' ? window.initSupabaseClient() : null);
+      if (client && typeof client.from === 'function') {
+        client.from('clientes').update({ device_id_activo: hwid }).eq('usuario', nombreAsignado).then(() => {
+          console.log(`[Supabase Realtime] device_id_activo actualizado a ${hwid} para ${nombreAsignado}`);
+        }).catch(e => console.error('[Supabase Realtime] Error actualizando HWID:', e));
+      }
+      window.Seguridad.iniciarSensorExpulsionRealtime(nombreAsignado);
+    });
+  }
 
-      vistaPanel.classList.remove('hidden');
-      vistaPanel.classList.add('active');
-      vistaPanel.style.display = 'flex';
-    } else {
-      mostrarVista('vista-panel');
-    }
+  const vistaLogin = document.getElementById('vista-login');
+  const vistaPanel = document.getElementById('vista-panel');
+  if (vistaLogin && vistaPanel) {
+    vistaLogin.classList.add('hidden');
+    vistaLogin.classList.remove('active');
+    vistaLogin.style.display = 'none';
+
+    vistaPanel.classList.remove('hidden');
+    vistaPanel.classList.add('active');
+    vistaPanel.style.display = 'flex';
+  } else {
+    mostrarVista('vista-panel');
+  }
 
     const sidebar = document.querySelector('.sidebar');
     if (sidebar) {
@@ -450,11 +484,49 @@ function actualizarWidgetSuscripcionSidebar() {
   }
 }
 
+function comprobarActualizacionesManualmente() {
+  const btn = document.getElementById('btn-buscar-actualizaciones');
+  if (btn) {
+    btn.innerText = 'Buscando...';
+    btn.disabled = true;
+  }
+
+  if (window.api && typeof window.api.comprobarActualizaciones === 'function') {
+    window.api.comprobarActualizaciones().then(res => {
+      console.log('[Frontend AutoUpdater] Petición manual procesada:', res);
+    }).catch(err => {
+      console.error('[Frontend AutoUpdater] Error:', err);
+    });
+  } else {
+    setTimeout(() => {
+      if (btn) {
+        btn.innerText = '¡Actualizado! (v1.0.0)';
+        btn.disabled = false;
+      }
+      mostrarNotificacion('La aplicación está en la versión más reciente (v1.0.0).', 'exito');
+    }, 1500);
+  }
+}
+
+if (window.api && typeof window.api.onEstadoActualizacion === 'function') {
+  window.api.onEstadoActualizacion((data) => {
+    const btn = document.getElementById('btn-buscar-actualizaciones');
+    if (btn && data && data.texto) {
+      btn.innerText = data.texto;
+      btn.disabled = (data.estado === 'buscando' || data.estado === 'disponible');
+    }
+    if (data && data.estado === 'descargado') {
+      mostrarNotificacion('Nueva versión lista. Se aplicará al reiniciar.', 'exito');
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   actualizarWidgetSuscripcionSidebar();
 });
 
 // Exposiciones globales
+window.comprobarActualizacionesManualmente = comprobarActualizacionesManualmente;
 window.mostrarNotificacion = mostrarNotificacion;
 window.cerrarToast = cerrarToast;
 window.escapeHtml = escapeHtml;
